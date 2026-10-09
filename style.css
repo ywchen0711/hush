@@ -1,0 +1,77 @@
+:root { --fg: #e6ddd0; --muted: #8f8577; --accent: #c9a76a; --blood: #a3141c; }
+* { box-sizing: border-box; }
+html, body { margin: 0; height: 100%; background: #000; color: var(--fg); overflow: hidden;
+  font-family: Inter, system-ui, sans-serif; -webkit-user-select: none; user-select: none; touch-action: none; }
+#view { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
+[hidden] { display: none !important; }
+
+/* ---------- HUD ---------- */
+#hud { position: fixed; inset: 0; pointer-events: none; z-index: 5; }
+.room { position: absolute; top: 18px; left: 22px; font: 22px 'Special Elite', monospace; letter-spacing: 3px; color: var(--accent); text-shadow: 0 0 8px #000; }
+.bars { position: absolute; left: 22px; bottom: 20px; display: flex; flex-direction: column; gap: 8px; width: 220px; }
+.bar .lbl { font-size: 11px; letter-spacing: 2px; color: var(--muted); }
+.bar .lbl b { color: var(--fg); margin-left: 4px; }
+.track { height: 6px; background: rgba(255, 255, 255, 0.1); border-radius: 3px; overflow: hidden; margin-top: 3px; }
+#hp-bar { height: 100%; width: 100%; background: #c8b8a0; transition: width 0.2s; }
+#hp-bar.low { background: #c0303a; }
+#bat-bar { height: 100%; width: 100%; background: #d8c070; }
+.inv { display: flex; gap: 14px; font-size: 12px; color: var(--muted); }
+.inv b { color: var(--fg); }
+#crouch-ind { color: #9ad0a0; letter-spacing: 1px; }
+#dot { position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); }
+#prompt { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font-size: 14px; letter-spacing: 1px; color: var(--fg); text-shadow: 0 0 6px #000; white-space: nowrap; }
+
+#caption { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); padding: 6px 14px; background: rgba(0, 0, 0, 0.6); font-size: 15px;
+  font-style: italic; color: #d8d0c4; border-radius: 4px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
+#caption.on { opacity: 1; }
+#toast { position: fixed; right: 26px; bottom: 24px; font: 16px 'Special Elite', monospace; color: var(--accent); opacity: 0; transition: opacity 0.3s; pointer-events: none; text-shadow: 0 0 6px #000; }
+#toast.on { opacity: 1; }
+
+/* hiding: looking out through the slats of a wardrobe */
+#slats { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.25s;
+  background: repeating-linear-gradient(to bottom, rgba(8, 5, 3, 0.92) 0 16px, rgba(8, 5, 3, 0.12) 16px 34px),
+              radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.9) 75%); }
+#slats.on { opacity: 1; }
+#gaze { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, rgba(120, 30, 200, 0.05) 30%, rgba(90, 10, 160, 0.75) 100%); }
+#hurt { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, transparent 35%, rgba(160, 10, 20, 0.85) 100%); }
+#hurt.on { animation: hurt 0.6s ease-out; }
+@keyframes hurt { from { opacity: 1; } to { opacity: 0; } }
+#scare { position: fixed; inset: 0; display: flex; align-items: center; justify-content: center; pointer-events: none; opacity: 0; background: rgba(0, 0, 0, 0.35); }
+#scare.on { opacity: 1; animation: shake 0.08s infinite; }
+#scare canvas { width: min(90vw, 90vh); height: min(90vw, 90vh); image-rendering: auto; filter: contrast(1.3); }
+@keyframes shake { 0% { transform: translate(4px, -3px) scale(1.05); } 50% { transform: translate(-5px, 4px) scale(1.1); } 100% { transform: translate(3px, 2px) scale(1.06); } }
+#fade { position: fixed; inset: 0; background: #f4efe4; opacity: 0; pointer-events: none; transition: opacity 1.4s; }
+#fade.on { opacity: 1; }
+
+/* ---------- screens ---------- */
+.screen { position: fixed; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: 20px;
+  background: radial-gradient(ellipse at center, rgba(20, 14, 10, 0.85), rgba(0, 0, 0, 0.97)); text-align: center; overflow-y: auto; }
+.screen h1 { font: 96px 'Special Elite', monospace; letter-spacing: 18px; margin: 0; color: var(--fg); text-shadow: 0 0 24px rgba(200, 160, 100, 0.25); }
+.screen h2 { font: 48px 'Special Elite', monospace; letter-spacing: 8px; margin: 0; }
+.sub { color: var(--muted); font-size: 16px; line-height: 1.6; margin: 0; }
+.phones { color: var(--accent); margin: 6px 0; }
+.small { color: var(--muted); font-size: 13px; letter-spacing: 2px; margin: 0; }
+.tip { max-width: 520px; font-size: 17px; line-height: 1.6; margin: 0; }
+.dead h2 { color: #d02a34; text-shadow: 0 0 20px rgba(200, 20, 30, 0.5); }
+.win { background: radial-gradient(ellipse at center, rgba(60, 54, 44, 0.9), rgba(10, 10, 12, 0.98)); }
+button.big { font: 18px 'Special Elite', monospace; letter-spacing: 4px; padding: 14px 34px; margin-top: 8px; cursor: pointer;
+  color: var(--fg); background: transparent; border: 1px solid rgba(230, 221, 208, 0.5); border-radius: 2px; transition: all 0.2s; }
+button.big:hover { background: rgba(230, 221, 208, 0.1); border-color: var(--accent); color: var(--accent); }
+.how { max-width: 640px; font-size: 13px; color: var(--muted); display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.how b { color: var(--fg); }
+.rules { display: flex; flex-direction: column; gap: 4px; text-align: left; }
+.opts { display: flex; gap: 22px; font-size: 13px; color: var(--muted); align-items: center; flex-wrap: wrap; justify-content: center; }
+.best { color: var(--accent); font-size: 13px; letter-spacing: 2px; }
+
+/* ---------- touch ---------- */
+#stick, #touch-btns { display: none; }
+body.touch #touch-btns { display: flex; position: fixed; right: 14px; bottom: 16px; gap: 8px; flex-wrap: wrap; width: 180px; justify-content: flex-end; }
+body.touch #touch-btns button { width: 82px; height: 50px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.35); background: rgba(0, 0, 0, 0.35); color: var(--fg); font: 12px Inter, sans-serif; letter-spacing: 1px; }
+body.touch #touch-btns button.on { background: rgba(200, 170, 110, 0.35); }
+body.touch #stick { display: block; position: fixed; width: 100px; height: 100px; border-radius: 50%; border: 1px solid rgba(255, 255, 255, 0.3); background: rgba(255, 255, 255, 0.06); opacity: 0; pointer-events: none; }
+body.touch #stick.on { opacity: 1; }
+#stick-knob { position: absolute; left: 30px; top: 30px; width: 40px; height: 40px; border-radius: 50%; background: rgba(255, 255, 255, 0.35); }
+body.touch .how > div:first-child { display: none; }
+body.touch .bars { bottom: 130px; }
+@media (max-width: 640px) { .screen h1 { font-size: 64px; letter-spacing: 10px; } .rules { font-size: 12px; } }
+body.touch:not(.playing) #touch-btns { display: none; }

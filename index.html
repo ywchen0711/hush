@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>HUSH</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Special+Elite&family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=1">
+  <script type="importmap">
+    { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+</head>
+<body>
+  <canvas id="view"></canvas>
+
+  <!-- in-game HUD -->
+  <div id="hud" hidden>
+    <div class="room">ROOM <span id="room-no">000</span></div>
+    <div class="bars">
+      <div class="bar"><span class="lbl">HEALTH</span><div class="track"><div id="hp-bar"></div></div></div>
+      <div class="bar"><span class="lbl">LIGHT <b id="light-state">OFF</b></span><div class="track"><div id="bat-bar"></div></div></div>
+      <div class="inv"><span>&#9679; <b id="gold">0</b> gold</span><span id="keys-wrap">&#128273; <b id="keys">0</b></span><span id="crouch-ind">CROUCHING</span></div>
+    </div>
+    <div id="dot"></div>
+    <div id="prompt"></div>
+  </div>
+  <div id="caption"></div>
+  <div id="toast"></div>
+  <div id="slats"></div>
+  <div id="gaze"></div>
+  <div id="hurt"></div>
+  <div id="scare"></div>
+  <div id="fade"></div>
+
+  <!-- touch controls -->
+  <div id="stick"><div id="stick-knob"></div></div>
+  <div id="touch-btns">
+    <button id="t-light">LIGHT</button>
+    <button id="t-crouch">CROUCH</button>
+    <button id="t-run">RUN</button>
+    <button id="t-use">USE</button>
+  </div>
+
+  <!-- screens -->
+  <section id="title" class="screen">
+    <h1>HUSH</h1>
+    <p class="sub">Fifty rooms stand between you and the way out.<br>Something in this house is listening.</p>
+    <p class="phones">&#127911; Play with headphones. Every threat makes a sound first.</p>
+    <button id="btn-start" class="big">ENTER THE HOUSE</button>
+    <div class="how">
+      <div><b>WASD</b> move &middot; <b>Mouse</b> look &middot; <b>Shift</b> run &middot; <b>C</b> crouch &middot; <b>E</b> use / hide &middot; <b>F</b> flashlight</div>
+      <div class="rules">
+        <span><b>A rumble and flickering lights</b> &rarr; hide in a wardrobe until it passes. Sometimes it comes back.</span>
+        <span><b>A whisper in the dark</b> &rarr; turn toward it, quickly.</span>
+        <span><b>A low choir</b> &rarr; something is watching. Don't look at it.</span>
+        <span><b>Heavy footsteps</b> &rarr; it's blind. Crouch, and never run.</span>
+        <span><b>Breathing in the wardrobe</b> &rarr; you stayed too long. Get out.</span>
+        <span>Locked doors: the key is in a drawer. Search drawers for gold, batteries and bandages.</span>
+      </div>
+    </div>
+    <div class="opts">
+      <label><input type="checkbox" id="opt-captions"> Sound captions</label>
+      <label>Mouse <input type="range" id="sens" min="0" max="5" step="1" value="2"></label>
+    </div>
+    <p id="best" class="best"></p>
+  </section>
+
+  <section id="paused" class="screen" hidden>
+    <h2>PAUSED</h2>
+    <button id="btn-resume" class="big">RESUME</button>
+  </section>
+
+  <section id="dead" class="screen dead" hidden>
+    <p class="small">YOU DIED TO</p>
+    <h2 id="dead-by"></h2>
+    <p id="dead-tip" class="tip"></p>
+    <p id="dead-room" class="small"></p>
+    <button id="btn-retry" class="big">TRY AGAIN</button>
+  </section>
+
+  <section id="win" class="screen win" hidden>
+    <h2>YOU GOT OUT</h2>
+    <p class="sub">Fifty doors. The night air has never felt so quiet.</p>
+    <p id="win-stats" class="small"></p>
+    <button id="btn-again" class="big">GO BACK IN</button>
+  </section>
+
+  <noscript>HUSH needs JavaScript and WebGL.</noscript>
+  <script type="module" src="js/main.js?v=1"></script>
+</body>
+</html>
