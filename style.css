@@ -19,7 +19,8 @@ html, body { margin: 0; height: 100%; background: #000; color: var(--fg); overfl
 .inv b { color: var(--fg); }
 #crouch-ind { color: #9ad0a0; letter-spacing: 1px; }
 #dot { position: absolute; left: 50%; top: 50%; width: 4px; height: 4px; margin: -2px; border-radius: 50%; background: rgba(255, 255, 255, 0.55); }
-#prompt { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font-size: 14px; letter-spacing: 1px; color: var(--fg); text-shadow: 0 0 6px #000; white-space: nowrap; }
+#prompt { position: absolute; left: 50%; top: 58%; transform: translateX(-50%); font-size: 14px; letter-spacing: 1px; color: var(--fg); text-shadow: 0 0 6px #000, 0 0 3px #000; white-space: nowrap; }
+#slats.on ~ #hud #prompt, body.hiding #prompt { color: #f4ead8; font-size: 16px; }
 
 #caption { position: fixed; left: 50%; bottom: 90px; transform: translateX(-50%); padding: 6px 14px; background: rgba(0, 0, 0, 0.6); font-size: 15px;
   font-style: italic; color: #d8d0c4; border-radius: 4px; opacity: 0; transition: opacity 0.3s; pointer-events: none; }
@@ -29,8 +30,8 @@ html, body { margin: 0; height: 100%; background: #000; color: var(--fg); overfl
 
 /* hiding: looking out through the slats of a wardrobe */
 #slats { position: fixed; inset: 0; pointer-events: none; opacity: 0; transition: opacity 0.25s;
-  background: repeating-linear-gradient(to bottom, rgba(8, 5, 3, 0.92) 0 16px, rgba(8, 5, 3, 0.12) 16px 34px),
-              radial-gradient(ellipse at center, transparent 30%, rgba(0, 0, 0, 0.9) 75%); }
+  background: repeating-linear-gradient(to bottom, rgba(8, 5, 3, 0.7) 0 9px, rgba(8, 5, 3, 0.05) 9px 30px),
+              radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.6) 90%); }
 #slats.on { opacity: 1; }
 #gaze { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, rgba(120, 30, 200, 0.05) 30%, rgba(90, 10, 160, 0.75) 100%); }
 #hurt { position: fixed; inset: 0; pointer-events: none; opacity: 0; background: radial-gradient(ellipse at center, transparent 35%, rgba(160, 10, 20, 0.85) 100%); }

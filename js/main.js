@@ -70,24 +70,28 @@ function roomIndexAt(z) {
   for (let i = 0; i < G.rooms.length; i++) { const r = G.rooms[i]; if (z <= r.oz + 0.01 && z > r.oz - r.d - GAP) return i; }
   return z > 0 ? 0 : G.rooms.length - 1;
 }
+const isLit = (r) => !r.dark && !r.lightBroken && !(r.lightOutT > 0);
 function applyLight(room) {
   if (!room.bulb) return;
-  const lit = !room.dark && !room.lightBroken;
+  const lit = isLit(room);
   room.bulb.material.emissiveIntensity = lit ? 2 : 0;
   room.bulb.material.color.set(lit ? '#ffe0a0' : '#3a3020');
 }
 function flicker(i, secs) { const r = G.rooms[i]; if (r) r.flickerT = Math.max(r.flickerT || 0, secs); }
 function breakLight(i) {
   const r = G.rooms[i];
-  if (!r || r.lightBroken || r.dark) return;
-  r.lightBroken = true;
+  if (!r || r.lightBroken || r.dark || r.lightOutT > 0) return;
+  if (i < G.player.room && Math.random() < 0.2) { r.lightBroken = true; audio.play('shatter', r.light); }   // a bulb behind you may really break
+  else { r.lightOutT = 7 + Math.random() * 5; audio.play('flicker', r.light); }                              // otherwise it is only knocked out for a while
   applyLight(r);
-  audio.play('shatter', r.light);
 }
 function updateLights(dt) {
-  G.rooms.forEach((r) => { if (r.flickerT > 0) r.flickerT -= dt; });
+  G.rooms.forEach((r) => {
+    if (r.flickerT > 0) r.flickerT -= dt;
+    if (r.lightOutT > 0) { r.lightOutT -= dt; if (r.lightOutT <= 0) { r.lightOutT = 0; r.flickerT = 1.2; applyLight(r); } }   // the light stutters back on
+  });
   const cur = G.player.room, lit = [];
-  for (let i = cur - 1; i <= cur + 2; i++) { const r = G.rooms[i]; if (r && r.group && !r.dark && !r.lightBroken) lit.push(r); }
+  for (let i = cur - 1; i <= cur + 2; i++) { const r = G.rooms[i]; if (r && r.group && isLit(r)) lit.push(r); }
   LIGHTS.forEach((l, k) => {
     const r = lit[k];
     if (!r) { l.intensity = 0; return; }
@@ -180,7 +184,7 @@ function hide(w) {
   p.yaw = w.yaw + Math.PI; p.pitch = 0;             // look out through the slats
   (w.doors || []).forEach((m) => { m.visible = false; });
   audio.play('wardrobe', { x: w.hideX, y: 1.2, z: w.hideZ });
-  $('slats').classList.add('on');
+  $('slats').classList.add('on'); document.body.classList.add('hiding');
 }
 function unhide(force) {
   const p = G.player, w = p.hidden;
@@ -189,8 +193,9 @@ function unhide(force) {
   p.pos.set(w.x, 0, w.z);
   (w.doors || []).forEach((m) => { m.visible = true; });
   if (force) p.yaw = w.yaw + Math.PI;
+  G.lightHint = 0.8;                                          // stepping out into the dark: remind about the flashlight soon
   audio.play('wardrobe', { x: w.hideX, y: 1.2, z: w.hideZ });
-  $('slats').classList.remove('on');
+  $('slats').classList.remove('on'); document.body.classList.remove('hiding');
 }
 
 // ======================= interaction =======================
@@ -342,6 +347,12 @@ function updatePlayer(dt) {
   if (p.light) { p.battery -= dt * 0.55; if (p.battery <= 0) { p.battery = 0; p.light = false; toast('The flashlight died'); } }
   flash.intensity = p.light ? 38 * (p.battery < 15 && Math.random() < 0.1 ? 0.2 : 1) : 0;
 
+  renderer.toneMappingExposure += ((p.hidden ? 1.7 : 1.05) - renderer.toneMappingExposure) * Math.min(1, dt * 2);
+  const here = G.rooms[p.room];
+  if (here && !isLit(here) && !p.light && p.battery > 0 && !p.hidden) {
+    G.lightHint = (G.lightHint || 0) - dt;
+    if (G.lightHint <= 0) { toast(isTouch ? 'Too dark? Tap LIGHT for your flashlight' : 'Too dark? Press F for your flashlight'); G.lightHint = 25; }
+  }
   if (p.hidden) {
     camera.position.set(p.hidden.hideX, 1.45, p.hidden.hideZ);
   } else {
